@@ -1,9 +1,14 @@
 // clients/heb.config.js
 // HEB: barcode + itemID payload
 
+function buildRequestId() {
+  const suffix = (__ENV.REQUEST_SUFFIX || "").toString().trim();
+  return `HEBPerformanceTest-${todayAsCompact()}${suffix ? "-" + suffix : "1"}`;
+}
+
 export default {
   name: "HEB",
-  tokenEnv: "TOKEN",
+  tokenEnv: "TOKEN_HEB",
   apiUrl: "https://eu2-hebwmd-webapi-dev.azurewebsites.net/api/v-20180601/markdown",
   csvPath: "../dataFiles/HebTestdata1.csv",
   csvFilter: (row) =>
@@ -26,7 +31,7 @@ export default {
     return {
       storeID: row.STOREID,
       storeBanner: "",
-      requestID: requestId,
+      requestID: buildRequestId(),
       localTime,
       items: [
         {

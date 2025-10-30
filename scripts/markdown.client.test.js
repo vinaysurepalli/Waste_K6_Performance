@@ -15,6 +15,10 @@ import http from "k6/http";
 import icelandCfg from "../config/iceland.config.js";
 import krogerCfg from "../config/kroger.config.js";
 import hebCfg from "../config/heb.config.js";
+import woolworthsCfg from "../config/woolworths.config.js";
+import eastofenglandCfg from "../config/eastofengland.config.js";
+import albertsonsCfg from "../config/Albertsons.config.js";
+import homebargainCfg from "../config/homebargain.config.js";
 
 // Optional Pyroscope – static import; guard the call later
 import pyroscope from "https://jslib.k6.io/http-instrumentation-pyroscope/1.0.1/index.js";
@@ -72,7 +76,8 @@ function decodeJWT(bearer) {
 
 // Choose client from env (default: iceland)
 const CLIENT = String(__ENV.CLIENT || "iceland").toLowerCase();
-const cfgMap = { iceland: icelandCfg, kroger: krogerCfg, heb: hebCfg };
+
+const cfgMap = { iceland: icelandCfg, kroger: krogerCfg, heb: hebCfg ,woolworths: woolworthsCfg, eastofengland: eastofenglandCfg, albertsons: albertsonsCfg,homebargain: homebargainCfg };
 const cfg = cfgMap[CLIENT] || icelandCfg;
 
 // Token from configured env key (e.g. TOKEN)

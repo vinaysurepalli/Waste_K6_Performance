@@ -3,7 +3,7 @@
 
 export default {
   name: "Iceland",
-  tokenEnv: "TOKEN",
+  tokenEnv: "TOKEN_ICELAND", // <— set this env var with your Bearer token
   apiUrl: "https://uks-icewmd-webapi-dev.azurewebsites.net/api/v-20180601/markdown",
   csvPath: "../dataFiles/IcelandTestDataset.csv",
   csvFilter: (row) =>
