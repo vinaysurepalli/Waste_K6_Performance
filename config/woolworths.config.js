@@ -32,9 +32,9 @@ export default {
     row.ORIGINAL_PRICE &&
     row.CURRENT_PRICE &&
     row.QTY_MARKDOWN &&
-    row.storeBanner &&
-    row.Item_ID &&
-    row.itemGroupID &&
+    row.STOREBANNER &&
+    row.ITEM_ID &&
+    row.ITEMGROUPID &&
     row.QTY_ON_HAND,
 
   // === Optional per-client headers (leave empty if not needed) ===
@@ -74,14 +74,14 @@ export default {
 
     return {
       storeID: row.STOREID,
-      storeBanner: row.storeBanner,
+      storeBanner: row.STOREBANNER,
       requestID: buildRequestId(),
       localTime,
       items: [
         {
           barcode: null,
-          itemID: row.Item_ID,
-          itemGroupID: row.itemGroupID,
+          itemID: row.ITEM_ID,
+          itemGroupID: row.ITEMGROUPID,
           itemGroupType: null,
           originalPrice: parseFloat(row.ORIGINAL_PRICE),
           currentPrice: parseFloat(row.CURRENT_PRICE),

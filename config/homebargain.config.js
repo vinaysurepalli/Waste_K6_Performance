@@ -21,7 +21,7 @@ export default {
   tokenEnv: "TOKEN_HOMEBARGAIN", // <— set this env var with your Bearer token
 
   // === Endpoint ===
-  apiUrl: "https://uks-hb-webapi-dev.azurewebsites.net/api/v-20180601/markdown",
+  apiUrl: "https://uks-hb-webapi-dev.azurewebsites.net/api/v-20180601/markdowncls",
 
   // === Data source ===
   csvPath: "../dataFiles/Homebargaindata.csv",
@@ -30,7 +30,7 @@ export default {
   csvFilter: (row) =>
     row &&
     row.STOREID &&
-    row.BarCode &&
+    row.BARCODE &&
     row.ORIGINAL_PRICE &&
     row.CURRENT_PRICE &&
     row.QTY_MARKDOWN,
@@ -71,12 +71,12 @@ export default {
 
     return {
       storeID: row.STOREID,
-      storeBanner: row.storeBanner,
+      storeBanner: null,
       requestID: buildRequestId(),
       localTime,
       items: [
         {
-          barcode: row.BarCode,
+          barcode: row.BARCODE,
           itemID: null,
           itemGroupID: null,
           itemGroupType: null,

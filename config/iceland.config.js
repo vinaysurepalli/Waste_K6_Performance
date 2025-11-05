@@ -9,7 +9,7 @@ export default {
   csvFilter: (row) =>
     row &&
     row.STOREID &&
-    row.BarCode &&
+    row.BARCODE &&
     row.ORIGINAL_PRICE &&
     row.CURRENT_PRICE &&
     row.QTY_MARKDOWN,
@@ -24,12 +24,12 @@ export default {
 
     return {
       storeID: row.STOREID,
-      storeBanner: "",
+      storeBanner: null,
       requestID: requestId,
       localTime,
       items: [
         {
-          barcode: row.BarCode,
+          barcode: row.BARCODE,
           itemID: null,
           itemGroupID: null,
           itemGroupType: null,

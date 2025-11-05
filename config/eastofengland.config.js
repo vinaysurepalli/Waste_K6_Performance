@@ -30,8 +30,8 @@ export default {
   csvFilter: (row) =>
    row &&
     row.STOREID &&
-    row.BarCode &&
-    row.Item_ID &&
+    row.BARCODE &&
+    row.ITEM_ID &&
     row.ORIGINAL_PRICE &&
     row.CURRENT_PRICE &&
     row.QTY_MARKDOWN,
@@ -72,13 +72,13 @@ export default {
 
     return {
       storeID: row.STOREID,
-      storeBanner: row.storeBanner,
+      storeBanner: null,
       requestID: buildRequestId(),
       localTime,
       items: [
         {
-          barcode: row.BarCode,
-          itemID: row.Item_ID,
+          barcode: row.BARCODE,
+          itemID: row.ITEM_ID,
           itemGroupID: null,
           itemGroupType: null,
           originalPrice: parseFloat(row.ORIGINAL_PRICE),
