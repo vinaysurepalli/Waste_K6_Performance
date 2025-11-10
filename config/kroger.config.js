@@ -4,7 +4,7 @@ export default {
   apiUrl: "https://krwmd1-wmd-dev.ri-team.com/api/v-20180601/markdown",
 
   // Use the SAME CSV you used when it worked
-  csvPath: "../dataFiles/LoadTestingSamples(HighVolume).csv",
+  csvPath: "../dataFiles/KrogerData(HighVolume).csv",
   csvFilter: (row) =>
     row.STOREID &&
     row.ITEMID &&

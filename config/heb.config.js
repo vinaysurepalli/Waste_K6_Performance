@@ -15,7 +15,7 @@ export default {
     row &&
     row.STOREID &&
     row.BARCODE &&
-    row.ITEM_ID &&
+    row.ITEMID &&
     row.ORIGINAL_PRICE &&
     row.CURRENT_PRICE &&
     row.QTY_MARKDOWN,

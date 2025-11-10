@@ -18,9 +18,14 @@ import krogerCfg from "../config/kroger.config.js";
 import hebCfg from "../config/heb.config.js";
 import woolworthsCfg from "../config/woolworths.config.js";
 import eastofenglandCfg from "../config/eastofengland.config.js";
-import albertsonsCfg from "../config/Albertsons.config.js";
+import albertsonsCfg from "../config/albertsons.config.js";
 import homebargainCfg from "../config/homebargain.config.js";
 import centralenglandCfg from "../config/centralengland.config.js";
+import midcountiesCfg from "../config/midcounties.config.js";
+import southernCfg from "../config/southern.config.js";
+import scotmidCfg from "../config/scotmid.config.js";
+import loblawConfig from "../config/loblaw.config.js";
+
 
 // Optional Pyroscope – static import; guard the call later
 import pyroscope from "https://jslib.k6.io/http-instrumentation-pyroscope/1.0.1/index.js";
@@ -84,6 +89,10 @@ const cfgMap = {
   albertsons: albertsonsCfg,
   homebargain: homebargainCfg,
   centralengland: centralenglandCfg,
+  midcounties: midcountiesCfg,
+  southern: southernCfg,
+  scotmid: scotmidCfg,
+  loblaw: loblawConfig,
 };
 const cfg = cfgMap[CLIENT] || icelandCfg;
 

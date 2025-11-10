@@ -1,4 +1,4 @@
-// clients/eastofengland.config.js
+// clients/HomeBargains.config.js
 
 // Small helper for ddmmyyyy
 function todayAsCompact() {

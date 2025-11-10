@@ -1,5 +1,6 @@
 // clients/iceland.config.js
 // iceland: barcode-only payload
+//https://uks-icewmd-webapi-prd.azurewebsites.net/api/v-20180601/markdown  <-- Production API
 
 export default {
   name: "Iceland",
