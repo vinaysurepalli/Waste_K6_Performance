@@ -28,18 +28,55 @@ export default {
 
   // Only keep rows that have the fields your payload needs
   csvFilter: (row) =>
-   row &&
+    row &&
     row.STOREID &&
     row.BARCODE &&
     row.ITEMID &&
     row.ORIGINAL_PRICE &&
     row.CURRENT_PRICE &&
     row.QTY_MARKDOWN,
-  // === Optional per-client headers (leave empty if not needed) ===
-  extraHeaders: {
-    // e.g. "Ocp-Apim-Subscription-Key": __ENV.WOOL_APIM_KEY || "",
-    // e.g. "x-tenant-id": "WOOLWORTHS",
-  },
+
+   operations: [
+    {
+      key: "markdown",
+      method: "POST",
+      url: "https://ee-wmd-dev.ri-team.com/api/v-20180601/markdown",
+      contentType: "application/json",
+
+      // === Payload builder (matches your original script) ===
+      buildPayload: (row) => {
+        const MARKDOWN_TYPES = ["Short Dated", "Damaged"];
+        const markdownType = MARKDOWN_TYPES[Math.floor(Math.random() * MARKDOWN_TYPES.length)];
+
+        const now = new Date();
+        const localTime = new Date(now).toISOString();
+        const expiryDate = new Date(now).toISOString().split("T")[0];
+
+        return {
+          storeID: row.STOREID,
+          storeBanner: null,
+          requestID: buildRequestId(),
+          localTime,
+          items: [
+            {
+              barcode: row.BARCODE,
+              itemID: row.ITEM_ID,
+              itemGroupID: null,
+              itemGroupType: null,
+              originalPrice: parseFloat(row.ORIGINAL_PRICE),
+              currentPrice: parseFloat(row.CURRENT_PRICE),
+              markdownType,
+              markdownIteration: 1,
+              expiryDate,
+              qtyMarkdown: parseInt(row.QTY_MARKDOWN, 10),
+              qtyOnHand: parseInt(row.QTY_ON_HAND || row.QTY_MARKDOWN, 10),
+              qtySoldToday: null,
+            },
+          ],
+        };
+      },
+    },
+  ],
 
   // === Cloud run defaults (you can override from CLI env) ===
   cloud: {
@@ -56,41 +93,8 @@ export default {
     startVUs: Number(__ENV.RAMP_START_VUS || 10),
     stages: [
       { target: Number(__ENV.RAMP_TARGET_VUS || 100), duration: String(__ENV.RAMP_DURATION || "5m") },
-      { target: Number(__ENV.STEADY_VUS || 50),        duration: String(__ENV.STEADY_DURATION || "2m") },
+      { target: Number(__ENV.STEADY_VUS || 50), duration: String(__ENV.STEADY_DURATION || "2m") },
     ],
     gracefulRampDown: "30s",
-  },
-
-  // === Payload builder (matches your original script) ===
-  buildPayload: (row) => {
-    const MARKDOWN_TYPES = ["Short Dated", "Damaged"];
-    const markdownType = MARKDOWN_TYPES[Math.floor(Math.random() * MARKDOWN_TYPES.length)];
-
-    const now = new Date();
-    const localTime = new Date(now).toISOString();
-    const expiryDate = new Date(now).toISOString().split("T")[0];
-
-    return {
-      storeID: row.STOREID,
-      storeBanner: null,
-      requestID: buildRequestId(),
-      localTime,
-      items: [
-        {
-          barcode: row.BARCODE,
-          itemID: row.ITEM_ID,
-          itemGroupID: null,
-          itemGroupType: null,
-          originalPrice: parseFloat(row.ORIGINAL_PRICE),
-          currentPrice: parseFloat(row.CURRENT_PRICE),
-          markdownType,
-          markdownIteration: 1,
-          expiryDate,
-          qtyMarkdown: parseInt(row.QTY_MARKDOWN, 10),
-          qtyOnHand: parseInt(row.QTY_ON_HAND || row.QTY_MARKDOWN, 10),
-          qtySoldToday: null,
-        },
-      ],
-    };
   },
 };

@@ -34,9 +34,61 @@ export default {
     row.QTY_MARKDOWN &&
     row.STOREBANNER &&
     row.ITEM_ID &&
-    row.ITEMGROUPID &&
+    row.ITEMFROUPID &&
     row.QTY_ON_HAND,
+  // === Optional per-client headers (leave empty if not needed) ===
+  extraHeaders: {
+    // e.g. "Ocp-Apim-Subscription-Key": __ENV.WOOL_APIM_KEY || "",
+    // e.g. "x-tenant-id": "WOOLWORTHS",
+  },
 
+
+  // ---------- Operations used by markdown.client.test.js ----------
+  operations: [
+    {
+      key: "markdown",
+      method: "POST",
+      // If you have a specific DEV/CRT/PRD URL, put it here:
+      url: "https://aea-wmdau-webapi-crt-web.azurewebsites.net/api/v-20180601/markdown",
+      contentType: "application/json",
+      // === Payload builder (matches your original script) ===
+
+      buildPayload: (row) => {
+        const MARKDOWN_TYPES = ["Short Dated", "Short Dated"];
+        const markdownType = MARKDOWN_TYPES[Math.floor(Math.random() * MARKDOWN_TYPES.length)];
+
+        const now = new Date();
+        const localTime = new Date(now.getTime() + 10 * 60 * 60 * 1000).toISOString();   // +10h
+        const expiryTime = new Date(now.getTime() + 16 * 60 * 60 * 1000).toISOString();  // +16h
+
+        return {
+          storeID: row.STOREID,
+          storeBanner: row.STOREBANNER,
+          requestID: buildRequestId(),
+          localTime,
+          items: [
+            {
+              barcode: null,
+              itemID: row.ITEM_ID,
+              itemGroupID: row.ITEMGROUPID,
+              itemGroupType: null,
+              originalPrice: parseFloat(row.ORIGINAL_PRICE),
+              currentPrice: parseFloat(row.CURRENT_PRICE),
+              markdownType,
+              markdownIteration: 1,
+              expiryTime,
+              qtyMarkdown: parseInt(row.QTY_MARKDOWN, 10),
+              qtyOnHand: parseInt(row.QTY_ON_HAND || row.QTY_MARKDOWN, 10),
+              qtySoldToday: null,
+            },
+          ],
+        };
+      },
+      extraHeaders: {
+        // per-op overrides if needed, otherwise keep empty
+      },
+    },
+  ],
   // === Optional per-client headers (leave empty if not needed) ===
   extraHeaders: {
     // e.g. "Ocp-Apim-Subscription-Key": __ENV.WOOL_APIM_KEY || "",
@@ -58,41 +110,8 @@ export default {
     startVUs: Number(__ENV.RAMP_START_VUS || 10),
     stages: [
       { target: Number(__ENV.RAMP_TARGET_VUS || 100), duration: String(__ENV.RAMP_DURATION || "5m") },
-      { target: Number(__ENV.STEADY_VUS || 50),        duration: String(__ENV.STEADY_DURATION || "2m") },
+      { target: Number(__ENV.STEADY_VUS || 50), duration: String(__ENV.STEADY_DURATION || "2m") },
     ],
     gracefulRampDown: "30s",
-  },
-
-  // === Payload builder (matches your original script) ===
-  buildPayload: (row) => {
-    const MARKDOWN_TYPES = ["Short Dated", "Short Dated"];
-    const markdownType = MARKDOWN_TYPES[Math.floor(Math.random() * MARKDOWN_TYPES.length)];
-
-    const now = new Date();
-    const localTime = new Date(now.getTime() + 10 * 60 * 60 * 1000).toISOString();   // +10h
-    const expiryTime = new Date(now.getTime() + 16 * 60 * 60 * 1000).toISOString();  // +16h
-
-    return {
-      storeID: row.STOREID,
-      storeBanner: row.STOREBANNER,
-      requestID: buildRequestId(),
-      localTime,
-      items: [
-        {
-          barcode: null,
-          itemID: row.ITEM_ID,
-          itemGroupID: row.ITEMGROUPID,
-          itemGroupType: null,
-          originalPrice: parseFloat(row.ORIGINAL_PRICE),
-          currentPrice: parseFloat(row.CURRENT_PRICE),
-          markdownType,
-          markdownIteration: 1,
-          expiryTime,
-          qtyMarkdown: parseInt(row.QTY_MARKDOWN, 10),
-          qtyOnHand: parseInt(row.QTY_ON_HAND || row.QTY_MARKDOWN, 10),
-          qtySoldToday: null,
-        },
-      ],
-    };
   },
 };

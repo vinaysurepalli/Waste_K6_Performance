@@ -1,10 +1,34 @@
+// config/kroger.config.js
+
+// Simple ddmmyyyy helper for requestID
+function todayAsCompact() {
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}${mm}${yyyy}`;
+}
+
+function buildRequestId() {
+  const suffix = (__ENV.REQUEST_SUFFIX || "").toString().trim();
+  return `KrogerPerformanceTest-${todayAsCompact()}${suffix ? "-" + suffix : ""}`;
+}
+
 export default {
+  // === Identity ===
   name: "Kroger",
-  tokenEnv: "KROGER_TOKEN", // or "TOKEN" if you want to reuse one env var for all
+
+  // 🔑 env var for the token:
+   tokenEnv: "TOKEN_KROGER",
+
+ 
   apiUrl: "https://krwmd1-wmd-dev.ri-team.com/api/v-20180601/markdown",
 
-  // Use the SAME CSV you used when it worked
+  
+  // === Data source ===
   csvPath: "../dataFiles/KrogerData(HighVolume).csv",
+
+  // Only keep valid rows (adjust column names if needed)
   csvFilter: (row) =>
     row.STOREID &&
     row.ITEMID &&
@@ -13,6 +37,20 @@ export default {
     row.CURRENT_PRICE &&
     row.ORIGINAL_PRICE ,
 
+  // Optional APIM / tenant headers
+  extraHeaders: {
+    // "Ocp-Apim-Subscription-Key": __ENV.HB_APIM_KEY || "",
+    // "x-tenant-id": "KROGER",
+  },
+
+  // ---------- Operations used by markdown.client.test.js ----------
+  operations: [
+    {
+      key: "markdown",
+      method: "POST",
+      // If you have a specific DEV/CRT/PRD URL, put it here:
+      url: "https://krwmd1-wmd-dev.ri-team.com/api/v-20180601/markdown",
+            contentType: "application/json",
   buildPayload: (row) => {
     const now = new Date();
     const localTime  = new Date().toISOString();
@@ -42,14 +80,13 @@ export default {
     };
   },
 
-  // Only include headers when you actually provide values
-  extraHeaders: () => {
-    const h = {};
-    if (__ENV.KROGER_SUBSCRIPTION_KEY) h["Ocp-Apim-Subscription-Key"] = __ENV.KROGER_SUBSCRIPTION_KEY;
-    if (__ENV.KROGER_TENANT_ID)        h["x-tenant-id"]               = __ENV.KROGER_TENANT_ID; // e.g. "KROGER"
-    return h;
-  },
+      extraHeaders: {
+        // per-op overrides if needed, otherwise keep empty
+      },
+    },
+  ],
 
+  // === Cloud defaults ===
   cloud: {
     projectID: 3686723,
     name: "krogerPerformaceTest",
@@ -66,5 +103,11 @@ export default {
       { target: Number(__ENV.RAMP_TARGET_VUS || 200), duration: String(__ENV.STEADY_DURATION || "2m") },
     ],
     gracefulRampDown: "30s",
+  },
+
+  // Think time (ms)
+  think: {
+    minMs: Number(__ENV.SLEEP_MIN_MS || 500),
+    maxMs: Number(__ENV.SLEEP_MAX_MS || 1500),
   },
 };

@@ -28,7 +28,7 @@ export default {
 
     // === Data source ===
     // Adjust if your repo path differs.
-    csvPath: "../dataFiles/MidCountiesData.csv",
+    csvPath: "../dataFiles/MidcountiesData.csv",
 
     // Only keep rows that have the fields your payload needs
     csvFilter: (row) =>
@@ -42,31 +42,11 @@ export default {
     // === Optional per-client headers (leave empty if not needed) ===
     extraHeaders: {
         // e.g. "Ocp-Apim-Subscription-Key": __ENV.CE_APIM_KEY || "",
-        // e.g. "x-tenant-id": "CENTRALENGLAND",
+        // e.g. "x-tenant-id": "MIDCOUNTIES",
     },
 
-    // === Cloud run defaults (override via env if you like) ===
-    cloud: {
-        projectID: 3686723,
-        name: "MidCountiesWaste&Markdown",
-        distribution: {
-            london: { loadZone: "amazon:gb:london", percent: 100 },
-        },
-    },
-
-    // === Scenario defaults (ramping-vus) ===
-    scenario: {
-        executor: "ramping-vus",
-        startVUs: Number(__ENV.RAMP_START_VUS || 10),
-        stages: [
-            { target: Number(__ENV.RAMP_TARGET_VUS || 100), duration: String(__ENV.RAMP_DURATION || "5m") },
-            { target: Number(__ENV.STEADY_VUS || 50), duration: String(__ENV.STEADY_DURATION || "2m") },
-        ],
-        gracefulRampDown: "30s",
-    },
-
-    // ---------- Two-endpoint flow ----------
-    operations: [
+  // ---------- Two-endpoint flow ----------
+ operations: [
         {
             key: "markdown",
             method: "POST",
@@ -105,9 +85,9 @@ export default {
                     ],
                 };
             },
-            extraHeaders: {}, // e.g., "x-tenant-id": "CENTRALENGLAND"
+            extraHeaders: {}, // e.g., "x-tenant-id": "MIDCOUNTIES"
         },
-        {
+     {
             key: "prompted",
             method: "POST",
             url: "https://uks-mcowm-webapi-dev-web.azurewebsites.net/api/v-20180601/datechecker/save",
@@ -129,9 +109,29 @@ export default {
         },
     ],
 
-    // Think-time defaults (ms)
-    think: {
-        minMs: Number(__ENV.SLEEP_MIN_MS || 500),
-        maxMs: Number(__ENV.SLEEP_MAX_MS || 1500),
+  // === Cloud run defaults (override via env if you like) ===
+  cloud: {
+    projectID: 3686723,
+    name: "MidcountiesWaste&Markdown",
+    distribution: {
+      london: { loadZone: "amazon:gb:london", percent: 100 },
     },
+  },
+
+  // === Scenario defaults (ramping-vus) ===
+  scenario: {
+    executor: "ramping-vus",
+    startVUs: Number(__ENV.RAMP_START_VUS || 10),
+    stages: [
+      { target: Number(__ENV.RAMP_TARGET_VUS || 100), duration: String(__ENV.RAMP_DURATION || "5m") },
+      { target: Number(__ENV.STEADY_VUS || 50), duration: String(__ENV.STEADY_DURATION || "2m") },
+    ],
+    gracefulRampDown: "30s",
+  },
+
+  // Think-time defaults (ms)
+  think: {
+    minMs: Number(__ENV.SLEEP_MIN_MS || 500),
+    maxMs: Number(__ENV.SLEEP_MAX_MS || 1500),
+  },
 };
