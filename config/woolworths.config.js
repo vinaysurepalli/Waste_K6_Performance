@@ -34,7 +34,7 @@ export default {
     row.QTY_MARKDOWN &&
     row.STOREBANNER &&
     row.ITEM_ID &&
-    row.ITEMFROUPID &&
+    row.ITEMGROUPID &&
     row.QTY_ON_HAND,
   // === Optional per-client headers (leave empty if not needed) ===
   extraHeaders: {
